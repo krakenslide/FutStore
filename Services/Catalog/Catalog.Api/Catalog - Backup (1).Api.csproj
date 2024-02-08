@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>34063500-04d1-4788-b1e0-331822461308</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>..\..\..</DockerfileContext>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="7.1.0" />
+		<PackageReference Include="AutoMapper" Version="12.0.1" />
+		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+		<PackageReference Include="MediatR" Version="12.1.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.
+						  " Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
+		<PackageReference Include="MongoDB.Driver" Version="2.23.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Catalog.Application\Catalog.Application.csproj" />
+	  <ProjectReference Include="..\Catalog.Infrastructure\Catalog.Infrastructure.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -7,9 +7,5 @@ namespace Catalog.API.Controllers
     [ApiController]
     public class ApiController : Controller
     {   
-        public IActionResult Index()
-        {
-            return View();
-        }
     }
 }

@@ -1,33 +1,28 @@
-﻿using Catalog.Core.Entities;
+﻿using System.Text.Json;
+using Catalog.Core.Entities;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace Catalog.Infrastructure.Data
+namespace Catalog.Infrastructure.Data;
+
+public class TypeContextSeed
 {
-    public static class TypeContextSeed
+    public static void SeedData(IMongoCollection<ProductType> typeCollection)
     {
-        public static void SeedData(IMongoCollection<ProductType> typeCollection)
+        bool checkTypes = typeCollection.Find(b => true).Any();
+        string path = Path.Combine("Data", "SeedData", "types.json");
+        string newpath = Path.Combine(SharedPath.BasePath, "Data", "SeedData", "products.json");
+        string dockerPath = Path.Combine(SharedPath.DockerPath, "types.json");
+        if (!checkTypes)
         {
-            bool checkTypes = typeCollection.Find(i => true).Any();
-            string path = Path.Combine("Data", "SeedData", "types.json");
-            if (!checkTypes)
+            var typesData = File.ReadAllText(dockerPath);
+            var types = JsonSerializer.Deserialize<List<ProductType>>(typesData);
+            if (types != null)
             {
-                var typesData = File.ReadAllText(path);
-                var types = JsonSerializer.Deserialize<List<ProductType>>(typesData);
-                if (types != null)
+                foreach (var item in types)
                 {
-                    foreach (var item in types)
-                    {
-                        typeCollection.InsertOneAsync(item);
-                    }
+                    typeCollection.InsertOneAsync(item);
                 }
             }
-
         }
     }
 }

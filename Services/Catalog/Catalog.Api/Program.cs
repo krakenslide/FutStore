@@ -6,6 +6,7 @@ using Catalog.Infrastructure.Repositories;
 using HealthChecks.UI.Client;
 using MediatR;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
@@ -19,8 +20,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 builder.Services.AddApiVersioning();
 
+var connectionString = builder.Configuration["DatabaseSettings:ConnectionStrings"];
+
+
 builder.Services.AddHealthChecks()
-    .AddMongoDb(builder.Configuration["DatabaseSettings:ConnectionString"], "Catalog Mongo Db Health Check", HealthStatus.Degraded);
+            .AddMongoDb(builder.Configuration["DatabaseSettings:ConnectionStrings"], "Catalog  Mongo Db Health Check",
+                HealthStatus.Degraded);
+
 
 builder.Services.AddSwaggerGen(c => {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Catalog.Api", Version = "v1" });
@@ -28,7 +34,12 @@ builder.Services.AddSwaggerGen(c => {
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly); //use just program if this does not work
 
-builder.Services.AddMediatR(typeof(CreateProductHandler).Assembly); //could throw error lookout
+/*builder.Services.AddMediatR(typeof(CreateProductHandler).Assembly);*/ //could throw error lookout
+
+/*builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+*/
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<CreateProductHandler>(
+));
 
 builder.Services.AddScoped<ICatalogContext, CatalogContext>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();

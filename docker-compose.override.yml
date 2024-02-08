@@ -1,0 +1,90 @@
+version: '3.4'
+
+services:
+  catalogdb:
+    container_name: catalogdb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  basketdb:
+    container_name: basketdb
+    restart: always
+    ports:
+      - "6379:6379"
+
+  discountdb:
+    container_name: discountdb
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=nagasiren99
+      - POSTGRES_DB=FutDiscount
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgresql.conf:/etc/postgresql.conf
+      - ./pg-data:/var/lib/postgresql/data
+ 
+  pgadmin:
+    container_name: pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@eShopping.net
+      - PGADMIN_DEFAULT_PASSWORD=nagasiren99 
+    restart: always
+    ports:
+      - "5080:5080"
+    volumes:
+      - pgadmin_data:/root/.pgadmin
+
+  portainer:
+    container_name: portainer
+    restart: always
+    ports:
+      - "8080:8000"
+      - "9090:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock 
+      - portainer_data:/data
+
+  catalog.api:
+    container_name: catalog.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings__ConnectionString=mongodb://catalogdb:27017"
+      - "DatabaseSettings__DatabaseName=Catalogdb"
+      - "DatabaseSettings__CollectionName=Products"
+      - "DatabaseSettings__BrandsCollection=Brands"
+      - "DatabaseSettings__TypesCollection=Types"
+    depends_on:
+      - catalogdb
+    ports:
+      - "9000:80"
+  basket.api:
+    container_name: basket.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "CacheSettings__ConnectionString=basketdb:6379"
+
+    depends_on:
+      - basketdb 
+    ports:
+      - "9001:80"
+
+  discount.api:
+    container_name: discount.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings__ConnectionString=Server=localhost;Port=5432;Database=FutDiscount;User Id=admin;Password=nagasiren99;"
+    depends_on:
+      - discountdb
+    ports:
+      - "9002:80"
+
+
+    ##volumes:
+     ## - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+     ## - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
