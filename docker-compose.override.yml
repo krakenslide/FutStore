@@ -19,23 +19,24 @@ services:
     container_name: discountdb
     environment:
       - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=nagasiren99
-      - POSTGRES_DB=FutDiscount
+      - POSTGRES_PASSWORD=new_password1
+      - POSTGRES_DB=DiscountDb
     restart: always
     ports:
       - "5432:5432"
     volumes:
-      - ./postgresql.conf:/etc/postgresql.conf
-      - ./pg-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data/
+      #- ./postgresql.conf:/etc/postgresql.conf
+      #- ./pg-data:/var/lib/postgresql/data 
  
   pgadmin:
     container_name: pgadmin
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@eShopping.net
-      - PGADMIN_DEFAULT_PASSWORD=nagasiren99 
+      - PGADMIN_DEFAULT_EMAIL=admin@shopping.net
+      - PGADMIN_DEFAULT_PASSWORD=new_password1
     restart: always
     ports:
-      - "5080:5080"
+      - "5050:80"
     volumes:
       - pgadmin_data:/root/.pgadmin
 
@@ -77,7 +78,7 @@ services:
     container_name: discount.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "DatabaseSettings__ConnectionString=Server=localhost;Port=5432;Database=FutDiscount;User Id=admin;Password=nagasiren99;"
+      - "DatabaseSettings__ConnectionString=Server=discountdb;Port=5432;Database=DiscountDb;User Id=admin;Password=new_password1;"
     depends_on:
       - discountdb
     ports:
